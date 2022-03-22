@@ -5,12 +5,15 @@ import "net/http"
 const (
 	URLLive = "https://api.sendchamp.com/api/v1"
 	URLTest = "https://sandbox-api.sendchamp.com/api/v1"
+
+	ModeLive = "live"
+	ModeTest = "test"
 )
 
 func NewClient(publicKey, mode string) *Client {
 	baseUrl := URLTest
 
-	if mode == "live" {
+	if mode == ModeLive {
 		baseUrl = URLLive
 	}
 
