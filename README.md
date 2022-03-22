@@ -17,7 +17,13 @@ var mode string = sendchamp.ModeLive // can be set to test mode (sendchamp.ModeT
 
 func main() {
   client := sendchamp.NewClient(publicKey, mode)
-  res, err := client.NewSms().Send("sendchamp", []string{"2348023456087"}, "My sms message", sendchamp.RouteInternational)
+  
+  sender := "sendchamp"
+  to := []string{"2348023456087"}
+  message := "my sms message"
+  route := sendchamp.RouteInternational
+
+  res, err := client.NewSms().Send(sender, to, message, route)
 
   if err != nil {
     log.Fatal(err)
