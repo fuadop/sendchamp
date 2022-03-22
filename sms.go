@@ -8,12 +8,18 @@ import (
 )
 
 const (
-	endpointSendSms = "/sms/send"
+	endpointSendSms  = "/sms/send"
+	endpointSenderID = "/sms/create-sender-id"
 
-	// sendchamp routes
+	// sms routes
 	RouteDND           = "dnd"
 	RouteNonDND        = "non_dnd"
 	RouteInternational = "international"
+
+	// sender ID use cases
+	UseCaseTransactional             = "transactional"
+	UseCaseMarketing                 = "marketing"
+	UseCaseTransactionalAndMarketing = "transaction_marketing"
 )
 
 type Sms struct {
@@ -27,15 +33,21 @@ type sendSmsPayload struct {
 	Route      string   `json:"route"`
 }
 
-type SendSmsResponse struct {
+type createSenderIdPayload struct {
+	Name    string `json:"name"`
+	Sample  string `json:"sample"`
+	UseCase string `json:"use_case"`
+}
+
+type sendSmsResponse struct {
 	Status  string              `json:"status"`
 	Code    string              `json:"code"`
 	Message string              `json:"message"`
-	Data    SendSmsResponseData `json:"data"`
+	Data    sendSmsResponseData `json:"data"`
 }
 
-type SendSmsResponseData struct {
-	Id            string `json:"id"`
+type sendSmsResponseData struct {
+	ID            string `json:"id"`
 	PhoneNumber   string `json:"phone_number"`
 	Reference     string `json:"reference"`
 	Amount        string `json:"amount"`
@@ -45,8 +57,8 @@ type SendSmsResponseData struct {
 	// it is possibly null
 	DeliveredAt string `json:"delivered_at"`
 	TotalSms    int    `json:"total_sms"`
-	BusinessUid string `json:"business_uid"`
-	Uid         string `json:"uid"`
+	BusinessUID string `json:"business_uid"`
+	UID         string `json:"uid"`
 
 	// timestamps
 	SentAt    string `json:"sent_at"`
@@ -54,8 +66,21 @@ type SendSmsResponseData struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+type createSenderIDResponse struct {
+	Status  string                     `json:"status"`
+	Code    string                     `json:"code"`
+	Message string                     `json:"message"`
+	Data    createSenderIDResponseData `json:"data"`
+}
+
+type createSenderIDResponseData struct {
+	UID         string `json:"uid"`
+	Name        string `json:"name"`
+	BusinessUID string `json:"business_uid"`
+}
+
 // Send sms to one or many phone number
-func (s *Sms) Send(senderName string, to []string, message, route string) (SendSmsResponse, error) {
+func (s *Sms) Send(senderName string, to []string, message, route string) (sendSmsResponse, error) {
 	url := fmt.Sprint(s.client.baseURL, endpointSendSms)
 
 	// populate request body
@@ -67,13 +92,13 @@ func (s *Sms) Send(senderName string, to []string, message, route string) (SendS
 	})
 
 	if err != nil {
-		return SendSmsResponse{}, err
+		return sendSmsResponse{}, err
 	}
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
 
 	if err != nil {
-		return SendSmsResponse{}, err
+		return sendSmsResponse{}, err
 	}
 
 	// add necessary request headers
@@ -81,15 +106,50 @@ func (s *Sms) Send(senderName string, to []string, message, route string) (SendS
 
 	res, err := s.client.httpClient.Do(req)
 	if err != nil {
-		return SendSmsResponse{}, err
+		return sendSmsResponse{}, err
 	}
 
 	defer res.Body.Close()
 
-	r := SendSmsResponse{}
+	r := sendSmsResponse{}
 	err = json.NewDecoder(res.Body).Decode(&r)
 	if err != nil {
-		return SendSmsResponse{}, err
+		return sendSmsResponse{}, err
+	}
+
+	return r, nil
+}
+
+// Create a sender ID
+func (s *Sms) CreateSenderID(name, sample, useCase string) (createSenderIDResponse, error) {
+	url := fmt.Sprint(s.client.baseURL, endpointSenderID)
+
+	byte, err := json.Marshal(createSenderIdPayload{
+		Name:    name,
+		Sample:  sample,
+		UseCase: useCase,
+	})
+	if err != nil {
+		return createSenderIDResponse{}, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
+	if err != nil {
+		return createSenderIDResponse{}, err
+	}
+
+	addHeaders(req, s.client)
+
+	res, err := s.client.httpClient.Do(req)
+	if err != nil {
+		return createSenderIDResponse{}, err
+	}
+
+	defer res.Body.Close()
+	r := createSenderIDResponse{}
+	err = json.NewDecoder(res.Body).Decode(&r)
+	if err != nil {
+		return createSenderIDResponse{}, err
 	}
 
 	return r, nil
