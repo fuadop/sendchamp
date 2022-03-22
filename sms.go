@@ -8,8 +8,10 @@ import (
 )
 
 const (
-	endpointSendSms  = "/sms/send"
-	endpointSenderID = "/sms/create-sender-id"
+	endpointSendSms            = "/sms/send"
+	endpointSenderID           = "/sms/create-sender-id"
+	endpointDeliveryReport     = "/sms/status/"
+	endpointBulkDeliveryReport = "/sms/bulk-sms-status/"
 
 	// sms routes
 	RouteDND           = "dnd"
@@ -47,12 +49,13 @@ type sendSmsResponse struct {
 }
 
 type sendSmsResponseData struct {
-	ID            string `json:"id"`
-	PhoneNumber   string `json:"phone_number"`
-	Reference     string `json:"reference"`
-	Amount        string `json:"amount"`
-	ServiceCharge string `json:"service_charge"`
-	Status        string `json:"status"`
+	// ID can be string or int: use type assertion for required case ID.(string)
+	ID            interface{} `json:"id"`
+	PhoneNumber   string      `json:"phone_number"`
+	Reference     string      `json:"reference"`
+	Amount        string      `json:"amount"`
+	ServiceCharge string      `json:"service_charge"`
+	Status        string      `json:"status"`
 
 	// it is possibly null
 	DeliveredAt string `json:"delivered_at"`
@@ -77,6 +80,12 @@ type createSenderIDResponseData struct {
 	UID         string `json:"uid"`
 	Name        string `json:"name"`
 	BusinessUID string `json:"business_uid"`
+}
+
+type GetDeliveryReport struct {
+	Status  string `json:"status"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
 }
 
 // Send sms to one or many phone number
@@ -150,6 +159,58 @@ func (s *Sms) CreateSenderID(name, sample, useCase string) (createSenderIDRespon
 	err = json.NewDecoder(res.Body).Decode(&r)
 	if err != nil {
 		return createSenderIDResponse{}, err
+	}
+
+	return r, nil
+}
+
+// Get single sms delivery report
+// This works for sms sent to a single number
+// only.
+// smsID = res.Data.ID from sms.Send method
+func (s *Sms) GetDeliveryReport(smsID string) (sendSmsResponse, error) {
+	url := fmt.Sprint(s.client.baseURL, endpointDeliveryReport, smsID)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return sendSmsResponse{}, err
+	}
+
+	addHeaders(req, s.client)
+	res, err := s.client.httpClient.Do(req)
+	if err != nil {
+		return sendSmsResponse{}, err
+	}
+
+	defer res.Body.Close()
+	r := sendSmsResponse{}
+	err = json.NewDecoder(res.Body).Decode(&r)
+	if err != nil {
+		return sendSmsResponse{}, err
+	}
+
+	return r, nil
+}
+
+func (s *Sms) GetBulkDeliveryReport(bulkSmsUID string) (sendSmsResponse, error) {
+	url := fmt.Sprint(s.client.baseURL, endpointDeliveryReport, bulkSmsUID)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return sendSmsResponse{}, err
+	}
+
+	addHeaders(req, s.client)
+	res, err := s.client.httpClient.Do(req)
+	if err != nil {
+		return sendSmsResponse{}, err
+	}
+
+	defer res.Body.Close()
+	r := sendSmsResponse{}
+	err = json.NewDecoder(res.Body).Decode(&r)
+	if err != nil {
+		return sendSmsResponse{}, err
 	}
 
 	return r, nil
