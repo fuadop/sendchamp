@@ -54,7 +54,7 @@ type SendSmsResponseData struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
-// Send sms to a phone number
+// Send sms to one or many phone number
 func (s *Sms) Send(senderName string, to []string, message, route string) (SendSmsResponse, error) {
 	url := fmt.Sprint(s.client.baseURL, endpointSendSms)
 
