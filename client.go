@@ -15,3 +15,10 @@ func (c *Client) NewSms() *Sms {
 		client: c,
 	}
 }
+
+// return a new voice instance
+func (c *Client) NewVoice() *Voice {
+	return &Voice{
+		client: c,
+	}
+}
