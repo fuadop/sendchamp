@@ -6,6 +6,7 @@ Go library for interacting with the [Sendchamp API](https://sendchamp.com)
 - [Basic Usage](#basic-usage)
 - [SMS](#sms)
 - [Voice](#voice)
+- [Wallet](#wallet)
 - [Examples](#examples)
 - [Contributing](#contributing)
 - [Todo List](#todo-list)
@@ -161,6 +162,33 @@ sendchamp.VoiceTypeOutgoing = "outgoing"
   }
   // use res for api response
   // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  ```
+
+## Wallet
+### Initialize
+```go
+ publicKey := "public_key"
+ mode := sendchamp.ModeLive
+
+ client := sendchamp.NewClient(publicKey, mode)
+```
+
+### Methods
+
+- `WalletBalance`
+  > Get your sendchamp wallet balance. Refer to [wallet_test.go](wallet_test.go).
+  ```go
+  res, err := client.WalletBalance()
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+
+  fmt.Println(res.Data.AvailableBalance) // Balance in usd (type string)
+
+  fmt.Println(res.Data.Details.BusinessAmount) // Balance in ngn (type float64)
   ```
 
 ## Contributing
