@@ -22,3 +22,10 @@ func (c *Client) NewVoice() *Voice {
 		client: c,
 	}
 }
+
+// return a new verification instance
+func (c *Client) NewVerification() *Verification {
+	return &Verification{
+		client: c,
+	}
+}
