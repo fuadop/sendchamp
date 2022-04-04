@@ -7,6 +7,7 @@ Go library for interacting with the [Sendchamp API](https://sendchamp.com)
 - [SMS](#sms)
 - [Voice](#voice)
 - [Wallet](#wallet)
+- [Verification](#verification)
 - [Examples](#examples)
 - [Contributing](#contributing)
 - [Todo List](#todo-list)
@@ -189,7 +190,84 @@ sendchamp.VoiceTypeOutgoing = "outgoing"
   fmt.Println(res.Data.AvailableBalance) // Balance in usd (type string)
 
   fmt.Println(res.Data.Details.BusinessAmount) // Balance in ngn (type float64)
+
+  // use vscode intellisense/auto-complete to see more fields.
   ```
+
+## Verification
+### Initialize
+```go
+ publicKey := "public_key"
+ mode := sendchamp.ModeLive
+
+ client := sendchamp.NewClient(publicKey, mode)
+ verification := client.NewVerification()
+```
+
+### Constants
+```go
+// otp channels
+sendchamp.OTPChannelSMS = "sms"
+sendchamp.OTPChannelEmail = "email"
+
+// otp token types
+sendchamp.OTPTokenTypeNumeric = "numeric"
+sendchamp.OTPTypeAlphaNumeric = "alphanumeric"
+```
+
+### Methods
+
+- `SendOTP`
+  > Send OTP to customer with sms or email channel. Refer to [verification_test.go](verification_test.go).
+  ```go
+  // create this outside the main function
+  // to contain any fields of your type
+  type metadata struct {
+    FirstName string // important - export fields and add json annotations
+    LastName  string
+  }
+
+  payload := sendchamp.SendOTPPayload{
+    // specify channel , "sms" or "email"
+		Channel:              sendchamp.OTPChannelSMS,
+		Sender:               "Sendchamp",
+    // specify "numeric" or "alphanumeric"
+		TokenType:            sendchamp.OTPTokenTypeNumeric,
+		TokenLength:          "4",
+    // expiration time in minutes
+		ExpirationTime:       6,
+    // mobile number in the 13 digit format
+		CustomerMobileNumber: "2348143222998",
+		CustomerEmailAddress: "abc@gmail.com",
+    // your metadata struct
+		MetaData:             metadata{"Shina", "Ebuka"},
+	}
+
+  res, err := verification.SendOTP(payload)
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  // use vscode autocomplete to see more values
+  ```
+
+- `ConfirmOTP`
+  > Confirm OTP sent to user. Refer to [verification_test.go](verification_test.go).
+  ```go
+	code, reference := "01799", "de858be1-6240-48fb-916c-4d07d8c9f79d"
+  res, err := verification.ConfirmOTP(code, reference)
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  // use vscode autocomplete/intellisense to see more properties
+  ```
+
+
 
 ## Contributing
 PRs are greatly appreciated, help us build this hugely needed tool so anyone else can easily integrate sendchamp into their Go based projects and applications.
@@ -201,12 +279,6 @@ PRs are greatly appreciated, help us build this hugely needed tool so anyone els
 5. Submit a pull request 🚀
 
 ### Todo List
-* [ ] Report Service
-  * [ ] Get Wallet Balance method
-* [ ] Verification Service
-  * [ ] Send OTP Method
-  * [ ] Confirm OTP Method
 * [ ] Customer Service
 * [ ] Customer Group Service
 * [ ] Whatsapp Service
-* [ ] Email Service
