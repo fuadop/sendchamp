@@ -27,10 +27,10 @@ type Voice struct {
 }
 
 type sendVoicePayload struct {
-	CustomerMobileNumber string `json:"customer_mobile_number"`
-	Message              string `json:"message"`
-	Type                 string `json:"type"`
-	Repeat               uint   `json:"repeat"`
+	CustomerMobileNumber []string `json:"customer_mobile_number"`
+	Message              string   `json:"message"`
+	Type                 string   `json:"type"`
+	Repeat               uint     `json:"repeat"`
 }
 
 type sendVoiceResponse struct {
@@ -51,7 +51,7 @@ type sendVoiceResponseData struct {
 // Send a voice to message to a customer mobile number.
 // Use sendchamp.VoiceTypeOutgoing for voiceType - as it is currently
 // the only supported type. repeat argument must be greater than zero.
-func (v *Voice) Send(customerMobileNumber, message, voiceType string, repeat uint) (sendVoiceResponse, error) {
+func (v *Voice) Send(customerMobileNumbers []string, message, voiceType string, repeat uint) (sendVoiceResponse, error) {
 	url := fmt.Sprint(v.client.baseURL, endpointSendVoice)
 	// validate repeat
 	if repeat <= 0 {
@@ -59,7 +59,7 @@ func (v *Voice) Send(customerMobileNumber, message, voiceType string, repeat uin
 	}
 
 	byte, err := json.Marshal(sendVoicePayload{
-		CustomerMobileNumber: customerMobileNumber,
+		CustomerMobileNumber: customerMobileNumbers,
 		Message:              message,
 		Type:                 voiceType,
 		Repeat:               repeat,

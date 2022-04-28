@@ -152,12 +152,12 @@ sendchamp.VoiceTypeOutgoing = "outgoing"
 - `Send`
   > Send a voice message to a phone number. Refer to [voice_test.go](voice_test.go).
   ```go
-  customerMobileNumber := "2348153207998"
+	customerMobileNumbers := []string{"2348153207998"}
 	message := "Test from golang test suite."
 	voiceType := sendchamp.VoiceTypeOutgoing // only supported type currently
 	var repeat uint = 3 // repeat the voice 3 times
 
-  res, err := voice.Send(customerMobileNumber, message, voiceType, repeat)
+  res, err := voice.Send(customerMobileNumbers, message, voiceType, repeat)
   // use err variables to check for errors like network errors, etc.
   if err != nil {
     // handle
