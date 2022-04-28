@@ -45,18 +45,19 @@ func TestGetDeliveryReport(t *testing.T) {
 		t.Error(err)
 	}
 
-	// assert to string
-	resp, err := sms.GetDeliveryReport(res.Data.ID.(string))
-	if err != nil {
-		t.Error(err)
-	}
+	if res.Data.ID != nil {
+		// assert to string
+		resp, err := sms.GetDeliveryReport(res.Data.ID.(string))
+		if err != nil {
+			t.Error(err)
+		}
+		if resp.Status != "success" {
+			t.Error("res.Status: ", resp.Status)
+		}
 
-	if resp.Status != "success" {
-		t.Error("res.Status: ", resp.Status)
-	}
-
-	if res.Data.ID.(string) != resp.Data.ID {
-		t.Error("Message IDs don't match")
+		if res.Data.ID.(string) != resp.Data.ID {
+			t.Error("Message IDs don't match")
+		}
 	}
 }
 
