@@ -8,6 +8,7 @@ Go library for interacting with the [Sendchamp API](https://sendchamp.com)
 - [Voice](#voice)
 - [Wallet](#wallet)
 - [Verification](#verification)
+- [Whatsapp](#whatsapp)
 - [Examples](#examples)
 - [Contributing](#contributing)
 - [Todo List](#todo-list)
@@ -267,7 +268,121 @@ sendchamp.OTPTypeAlphaNumeric = "alphanumeric"
   // use vscode autocomplete/intellisense to see more properties
   ```
 
+## Whatsapp
+### Initialize
+```go
+ publicKey := "public_key"
+ mode := sendchamp.ModeLive
 
+ client := sendchamp.NewClient(publicKey, mode)
+ whatsapp := client.NewWhatsapp()
+```
+
+### Methods
+- `SendTemplate`
+  > Send a whatsapp message using template created on dashboard. Refer to [whatsapp_test.go](whatsapp_test.go).
+  ```go
+	sender := "2348120678278"
+	recipient := "2348153207998"
+	templateCode := "912671fe-5f20-4b59-92ee-a33a62ea6a19"
+	data := map[string]string{
+		"1": "Test",
+		"2": "1234",
+		"3": "10",
+	}
+
+	res, err := whatsapp.SendTemplate(sender, recipient, templateCode, data)
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  ```
+
+- `SendText`
+  > Send a whatsapp text. Refer to [whatsapp_test.go](whatsapp_test.go).
+  ```go
+	sender := "2348120678278"
+	recipient := "2348153207998"
+	message := "Hello World"
+
+	res, err := whatsapp.SendText(sender, recipient, message)
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  ```
+
+- `SendAudio`
+  > Send a whatsapp audio message. Refer to [whatsapp_test.go](whatsapp_test.go).
+  ```go
+	sender := "2348120678278"
+	recipient := "2348153207998"
+	message := "I am the best"
+	link := "https://sample-videos.com/audio/mp3/crowd-cheering.mp3"
+
+	res, err := whatsapp.SendAudio(sender, recipient, message, link)
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  ```
+
+- `SendVideo`
+  > Send a whatsapp video message. Refer to [whatsapp_test.go](whatsapp_test.go).
+  ```go
+	sender := "2348120678278"
+	recipient := "2348153207998"
+	link := "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4"
+
+	res, err := whatsapp.SendVideo(sender, recipient, link)
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  ```
+
+- `SendSticker`
+  > Send a whatsapp sticker message. Refer to [whatsapp_test.go](whatsapp_test.go).
+  ```go
+	sender := "2348120678278"
+	recipient := "2348153207998"
+	link := "https://studio.posit.us/api/samples/sticker.webp"
+
+	res, err := whatsapp.SendSticker(sender, recipient, link)
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  ```
+
+- `SendLocation`
+  > Send a location via whatsapp. Refer to [whatsapp_test.go](whatsapp_test.go).
+  ```go
+	sender := "2348120678278"
+	recipient := "2348153207998"
+	longitude := -46.662787
+	latitude := -23.553610
+	name := "Robbu Brazil"
+	address := "Av. Angélica, 2530 - Bela Vista, São Paulo - SP, 01228-200"
+
+	res, err := whatsapp.SendLocation(sender, recipient, longitude, latitude, name, address)
+  // use err variables to check for errors like network errors, etc.
+  if err != nil {
+    // handle
+  }
+  // use res for api response
+  // res.Status, res.Code, res.Message, res.Data.ID, res.Data.CreatedAt, etc.  
+  ```
 
 ## Contributing
 PRs are greatly appreciated, help us build this hugely needed tool so anyone else can easily integrate sendchamp into their Go based projects and applications.
@@ -281,4 +396,3 @@ PRs are greatly appreciated, help us build this hugely needed tool so anyone els
 ### Todo List
 * [ ] Customer Service
 * [ ] Customer Group Service
-* [ ] Whatsapp Service
