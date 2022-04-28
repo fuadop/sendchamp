@@ -29,3 +29,10 @@ func (c *Client) NewVerification() *Verification {
 		client: c,
 	}
 }
+
+// return a new whatsapp instance
+func (c *Client) NewWhatsapp() *Whatsapp {
+	return &Whatsapp{
+		client: c,
+	}
+}
