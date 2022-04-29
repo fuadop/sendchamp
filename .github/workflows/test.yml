@@ -7,6 +7,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      public_key: ${{ secrets.PUBLIC_KEY }}
     steps: 
     - uses: actions/checkout@v2
     - name: Set up Go
@@ -14,4 +16,4 @@ jobs:
       with:
         go-version: 1.16
     - name: Run unit test
-      run: go test -v ./
+      run: PUBLIC_KEY='${{ env.public_key }}' go test -v ./
