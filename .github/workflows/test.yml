@@ -1,0 +1,19 @@
+name: Unit Tests
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      public_key: ${{ secrets.PUBLIC_KEY }}
+    steps: 
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+    - name: Run unit test
+      run: PUBLIC_KEY='${{ env.public_key }}' go test -v ./
