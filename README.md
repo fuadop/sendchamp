@@ -60,7 +60,7 @@ func main() {
 ```
 
 ## Examples
-Checkout more examples in the test files and [examples](/examples) folder.
+Checkout more examples in the test files and this example http server repo https://github.com/fuadop/my_server.
 
 ## SMS
 ### Initialize
