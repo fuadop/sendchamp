@@ -1,4 +1,7 @@
 # Sendchamp with Go
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 Go library for interacting with the [Sendchamp API](https://sendchamp.com)
 
 ## Table of contents
@@ -396,3 +399,23 @@ PRs are greatly appreciated, help us build this hugely needed tool so anyone els
 ### Todo List
 * [ ] Customer Service
 * [ ] Customer Group Service
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/sadiqful"><img src="https://avatars.githubusercontent.com/u/39303081?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Aliyu Abubakar</b></sub></a><br /><a href="#business-sadiqful" title="Business development">💼</a> <a href="#content-sadiqful" title="Content">🖋</a> <a href="#financial-sadiqful" title="Financial">💵</a> <a href="#ideas-sadiqful" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-sadiqful" title="Mentoring">🧑‍🏫</a> <a href="#platform-sadiqful" title="Packaging/porting to new platform">📦</a> <a href="#question-sadiqful" title="Answering Questions">💬</a> <a href="#tutorial-sadiqful" title="Tutorials">✅</a> <a href="#talk-sadiqful" title="Talks">📢</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
