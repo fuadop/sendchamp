@@ -1,6 +1,9 @@
 package sendchamp
 
-import "net/http"
+import (
+	"net/http"
+	"os"
+)
 
 const (
 	URLLive           = "https://api.sendchamp.com/api/v1"
@@ -12,7 +15,16 @@ const (
 	ModeLocalSimulator = "local-simulator"
 )
 
-func NewClient(publicKey, mode string) *Client {
+type Keys struct {
+	PublicKey string
+}
+
+func NewClient(key *Keys, mode string) *Client {
+	var publicKey string = os.Getenv(("SENDCHAMP_PUBLIC_KEY"))
+	if key != nil {
+		publicKey = key.PublicKey
+	}
+
 	baseUrl := URLTest
 
 	if mode == ModeLive {
