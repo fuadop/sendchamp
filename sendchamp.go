@@ -20,7 +20,7 @@ type Keys struct {
 }
 
 func NewClient(key *Keys, mode string) *Client {
-	var publicKey string = os.Getenv(("SENDCHAMP_PUBLIC_KEY"))
+	var publicKey string = os.Getenv("SENDCHAMP_PUBLIC_KEY")
 	if key != nil {
 		publicKey = key.PublicKey
 	}
