@@ -39,10 +39,13 @@ import (
   "github.com/fuadop/sendchamp"
 )
 
-var publicKey string = "your-public-key"
+var publicKey = &sendchamp.Keys{
+	PublicKey: "your-public-key",
+} //pass as nil to use the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
 var mode string = sendchamp.ModeLive // can be set to test mode (sendchamp.ModeTest) too
 
 func main() {
+  //if the first parameter is nil, the package would look for the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
   client := sendchamp.NewClient(publicKey, mode)
   
   sender := "sendchamp"
@@ -68,9 +71,11 @@ Checkout more examples in the test files and this example http server repo https
 ## SMS
 ### Initialize
 ```go
- publicKey := "public_key"
+ publicKey :=  &sendchamp.Keys{
+	PublicKey: "your-public-key",
+ } //pass as nil to use the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  mode := sendchamp.ModeLive
-
+ //if the first parameter is nil, the package would look for the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  client := sendchamp.NewClient(publicKey, mode)
  sms := client.NewSms()
 ```
@@ -138,9 +143,11 @@ sendchamp.UseCaseTransactionalAndMarketing = "transaction_marketing"
 ## Voice
 ### Initialize
 ```go
- publicKey := "public_key"
+ publicKey :=  &sendchamp.Keys{
+	PublicKey: "your-public-key",
+ } //pass as nil to use the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  mode := sendchamp.ModeLive
-
+ //if the first parameter is nil, the package would look for the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  client := sendchamp.NewClient(publicKey, mode)
  voice := client.NewVoice()
 ```
@@ -172,9 +179,11 @@ sendchamp.VoiceTypeOutgoing = "outgoing"
 ## Wallet
 ### Initialize
 ```go
- publicKey := "public_key"
+publicKey :=  &sendchamp.Keys{
+	PublicKey: "your-public-key",
+ } //pass as nil to use the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  mode := sendchamp.ModeLive
-
+ //if the first parameter is nil, the package would look for the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  client := sendchamp.NewClient(publicKey, mode)
 ```
 
@@ -201,9 +210,11 @@ sendchamp.VoiceTypeOutgoing = "outgoing"
 ## Verification
 ### Initialize
 ```go
- publicKey := "public_key"
+ publicKey :=  &sendchamp.Keys{
+	PublicKey: "your-public-key",
+ } //pass as nil to use the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  mode := sendchamp.ModeLive
-
+ //if the first parameter is nil, the package would look for the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  client := sendchamp.NewClient(publicKey, mode)
  verification := client.NewVerification()
 ```
@@ -274,9 +285,11 @@ sendchamp.OTPTypeAlphaNumeric = "alphanumeric"
 ## Whatsapp
 ### Initialize
 ```go
- publicKey := "public_key"
+publicKey :=  &sendchamp.Keys{
+	PublicKey: "your-public-key",
+ } //pass as nil to use the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  mode := sendchamp.ModeLive
-
+ //if the first parameter is nil, the package would look for the enviroment variable 'SENDCHAMP_PUBLIC_KEY'
  client := sendchamp.NewClient(publicKey, mode)
  whatsapp := client.NewWhatsapp()
 ```

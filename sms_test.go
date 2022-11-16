@@ -9,7 +9,9 @@ import (
 	"github.com/fuadop/sendchamp"
 )
 
-var key string = os.Getenv("PUBLIC_KEY")
+var key = &sendchamp.Keys{
+	PublicKey: os.Getenv("PUBLIC_KEY"),
+}
 
 // todo: switch to test mode when it's back available
 var client sendchamp.Client = *sendchamp.NewClient(key, sendchamp.ModeLive)

@@ -42,7 +42,7 @@ type createSenderIdPayload struct {
 }
 
 type sendSmsResponse struct {
-	Status  string              `json:"status"`
+	Status  uint                `json:"status"`
 	Code    string              `json:"code"`
 	Message string              `json:"message"`
 	Data    sendSmsResponseData `json:"data"`
