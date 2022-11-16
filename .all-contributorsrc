@@ -38,6 +38,17 @@
         "tool",
         "userTesting"
       ]
+    },
+    {
+      "login": "sayopaul",
+      "name": "Sayo Paul",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21235901?v=4",
+      "profile": "https://sayopaul.tech",
+      "contributions": [
+        "code",
+        "bug",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -45,5 +56,6 @@
   "projectOwner": "fuadop",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }
