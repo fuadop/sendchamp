@@ -29,8 +29,8 @@ func TestSendOTP(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
-		t.Errorf("res.Status: %s", res.Status)
+	if res.Status != 200 {
+		t.Errorf("res.Status: %v", res.Status)
 	}
 
 	payload = sendchamp.SendOTPPayload{
@@ -49,8 +49,8 @@ func TestSendOTP(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
-		t.Errorf("res.Status: %s", res.Status)
+	if res.Status != 200 {
+		t.Errorf("res.Status: %v", res.Status)
 	}
 }
 
@@ -60,7 +60,7 @@ func TestConfirmOTP(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if res.Status != "success" {
-		t.Errorf("res.Status: %s", res.Status)
+	if res.Status != 200 {
+		t.Errorf("res.Status: %v", res.Status)
 	}
 }

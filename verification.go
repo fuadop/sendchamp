@@ -1,7 +1,6 @@
 package sendchamp
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -41,7 +40,7 @@ type confirmOtpPayload struct {
 }
 
 type sendOtpResponse struct {
-	Status  string              `json:"status"`
+	Status  uint              `json:"status"`
 	Code    string              `json:"code"`
 	Message string              `json:"message"`
 	Data    sendOtpResponseData `json:"data"`
@@ -61,7 +60,7 @@ type sendOtpResponseDataChannel struct {
 }
 
 type confirmOtpResponse struct {
-	Status  string                 `json:"status"`
+	Status  uint                 `json:"status"`
 	Code    string                 `json:"code"`
 	Message string                 `json:"message"`
 	Data    confirmOtpResponseData `json:"data"`
@@ -90,57 +89,33 @@ type confirmOtpResponseData struct {
 // SendOTP - Send otp to a mobile number
 func (v *Verification) SendOTP(payload SendOTPPayload) (sendOtpResponse, error) {
 	url := fmt.Sprint(v.client.baseURL, endpointSendOtp)
-	byte, err := json.Marshal(payload)
+	reqData := v.client.NewRequest(http.MethodPost, url)
+	resp, err := v.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendOtpResponse{}, nil
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return sendOtpResponse{}, nil
-	}
-
-	addHeaders(req, v.client)
-	res, err := v.client.httpClient.Do(req)
-	if err != nil {
-		return sendOtpResponse{}, nil
-	}
-
-	defer res.Body.Close()
 	r := sendOtpResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendOtpResponse{}, nil
 	}
-
 	return r, nil
 }
 
 func (v *Verification) ConfirmOTP(code, reference string) (confirmOtpResponse, error) {
 	url := fmt.Sprint(v.client.baseURL, endpointConfirmOtp)
 
-	byte, err := json.Marshal(confirmOtpPayload{
+	payload := confirmOtpPayload{
 		VerificationCode:      code,
 		VerificationReference: reference,
-	})
+	}
+	reqData := v.client.NewRequest(http.MethodPost, url)
+	resp, err := v.client.SendRequest(reqData, payload)
 	if err != nil {
 		return confirmOtpResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return confirmOtpResponse{}, err
-	}
-
-	addHeaders(req, v.client)
-	res, err := v.client.httpClient.Do(req)
-	if err != nil {
-		return confirmOtpResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := confirmOtpResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return confirmOtpResponse{}, err
 	}

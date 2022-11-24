@@ -22,7 +22,7 @@ func TestSendSms(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 }
@@ -34,7 +34,7 @@ func TestCreateSenderID(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 }
@@ -53,7 +53,7 @@ func TestGetDeliveryReport(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if resp.Status != "success" {
+		if resp.Status != 200 {
 			t.Error("res.Status: ", resp.Status)
 		}
 
@@ -77,7 +77,7 @@ func TestGetBulkDeliveryReport(t *testing.T) {
 		t.Error(err)
 	}
 
-	if resp.Status != "success" {
+	if resp.Status != 200 {
 		t.Error("res.Status: ", resp.Status)
 	}
 

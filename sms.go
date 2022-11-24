@@ -1,7 +1,6 @@
 package sendchamp
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -42,7 +41,7 @@ type createSenderIdPayload struct {
 }
 
 type sendSmsResponse struct {
-	Status  uint                `json:"status"`
+	Status  uint              `json:"status"`
 	Code    string              `json:"code"`
 	Message string              `json:"message"`
 	Data    sendSmsResponseData `json:"data"`
@@ -70,7 +69,7 @@ type sendSmsResponseData struct {
 }
 
 type createSenderIDResponse struct {
-	Status  string                     `json:"status"`
+	Status  uint                     `json:"status"`
 	Code    string                     `json:"code"`
 	Message string                     `json:"message"`
 	Data    createSenderIDResponseData `json:"data"`
@@ -91,76 +90,44 @@ type GetDeliveryReport struct {
 // Send sms to one or many phone number
 func (s *Sms) Send(senderName string, to []string, message, route string) (sendSmsResponse, error) {
 	url := fmt.Sprint(s.client.baseURL, endpointSendSms)
-
 	// populate request body
-	byte, err := json.Marshal(sendSmsPayload{
+	payload := sendSmsPayload{
 		SenderName: senderName,
 		To:         to,
 		Message:    message,
 		Route:      route,
-	})
-
+	}
+	reqData := s.client.NewRequest(http.MethodPost, url)
+	resp, err := s.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendSmsResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-
-	if err != nil {
-		return sendSmsResponse{}, err
-	}
-
-	// add necessary request headers
-	addHeaders(req, s.client)
-
-	res, err := s.client.httpClient.Do(req)
-	if err != nil {
-		return sendSmsResponse{}, err
-	}
-
-	defer res.Body.Close()
-
 	r := sendSmsResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendSmsResponse{}, err
 	}
-
 	return r, nil
 }
 
 // Create a sender ID
 func (s *Sms) CreateSenderID(name, sample, useCase string) (createSenderIDResponse, error) {
 	url := fmt.Sprint(s.client.baseURL, endpointSenderID)
-
-	byte, err := json.Marshal(createSenderIdPayload{
+	payload := createSenderIdPayload{
 		Name:    name,
 		Sample:  sample,
 		UseCase: useCase,
-	})
+	}
+	reqData := s.client.NewRequest(http.MethodPost, url)
+	resp, err := s.client.SendRequest(reqData, payload)
 	if err != nil {
 		return createSenderIDResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return createSenderIDResponse{}, err
-	}
-
-	addHeaders(req, s.client)
-
-	res, err := s.client.httpClient.Do(req)
-	if err != nil {
-		return createSenderIDResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := createSenderIDResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return createSenderIDResponse{}, err
 	}
-
 	return r, nil
 }
 
@@ -170,45 +137,28 @@ func (s *Sms) CreateSenderID(name, sample, useCase string) (createSenderIDRespon
 // smsID = res.Data.ID from sms.Send method
 func (s *Sms) GetDeliveryReport(smsID string) (sendSmsResponse, error) {
 	url := fmt.Sprint(s.client.baseURL, endpointDeliveryReport, smsID)
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	reqData := s.client.NewRequest(http.MethodGet, url)
+	resp, err := s.client.SendRequest(reqData, nil)
 	if err != nil {
 		return sendSmsResponse{}, err
 	}
-
-	addHeaders(req, s.client)
-	res, err := s.client.httpClient.Do(req)
-	if err != nil {
-		return sendSmsResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := sendSmsResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendSmsResponse{}, err
 	}
-
 	return r, nil
 }
 
 func (s *Sms) GetBulkDeliveryReport(bulkSmsUID string) (sendSmsResponse, error) {
 	url := fmt.Sprint(s.client.baseURL, endpointDeliveryReport, bulkSmsUID)
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	reqData := s.client.NewRequest(http.MethodGet, url)
+	resp, err := s.client.SendRequest(reqData, nil)
 	if err != nil {
 		return sendSmsResponse{}, err
 	}
-
-	addHeaders(req, s.client)
-	res, err := s.client.httpClient.Do(req)
-	if err != nil {
-		return sendSmsResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := sendSmsResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendSmsResponse{}, err
 	}
