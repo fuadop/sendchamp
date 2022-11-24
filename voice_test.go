@@ -18,7 +18,7 @@ func TestSendVoice(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 

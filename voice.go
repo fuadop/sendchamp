@@ -1,7 +1,6 @@
 package sendchamp
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -34,7 +33,7 @@ type sendVoicePayload struct {
 }
 
 type sendVoiceResponse struct {
-	Status  string                `json:"status"`
+	Status  uint                `json:"status"`
 	Code    string                `json:"code"`
 	Message string                `json:"message"`
 	Data    sendVoiceResponseData `json:"data"`
@@ -57,34 +56,21 @@ func (v *Voice) Send(customerMobileNumbers []string, message, voiceType string, 
 	if repeat <= 0 {
 		return sendVoiceResponse{}, ErrorVoiceRepeat
 	}
-
-	byte, err := json.Marshal(sendVoicePayload{
+	payload := sendVoicePayload{
 		CustomerMobileNumber: customerMobileNumbers,
 		Message:              message,
 		Type:                 voiceType,
 		Repeat:               repeat,
-	})
+	}
+	reqData := v.client.NewRequest(http.MethodPost, url)
+	resp, err := v.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendVoiceResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return sendVoiceResponse{}, err
-	}
-
-	addHeaders(req, v.client)
-	res, err := v.client.httpClient.Do(req)
-	if err != nil {
-		return sendVoiceResponse{}, err
-	}
-	defer res.Body.Close()
-
 	r := sendVoiceResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendVoiceResponse{}, err
 	}
-
 	return r, nil
 }

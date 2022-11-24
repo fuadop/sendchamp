@@ -1,7 +1,6 @@
 package sendchamp
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -67,7 +66,7 @@ type sendLocationPayload struct {
 	Address   string  `json:"address"`
 }
 type sendTemplateResponse struct {
-	Status  string                   `json:"status"`
+	Status  uint                   `json:"status"`
 	Code    string                   `json:"code"`
 	Message string                   `json:"message"`
 	Data    sendTemplateResponseData `json:"data"`
@@ -83,8 +82,7 @@ type sendTemplateResponseData struct {
 // template created on dashboard.
 func (w *Whatsapp) SendTemplate(sender, recipient, templateCode string, data map[string]string) (sendTemplateResponse, error) {
 	url := fmt.Sprint(w.client.baseURL, endpointSendWhatsapp)
-
-	byte, err := json.Marshal(sendTemplatePayload{
+	payload := sendTemplatePayload{
 		Recipient:    recipient,
 		Sender:       sender,
 		Type:         WhatsappTypeTemplate,
@@ -92,26 +90,14 @@ func (w *Whatsapp) SendTemplate(sender, recipient, templateCode string, data map
 		CustomData: customData{
 			Body: data,
 		},
-	})
-
+	}
+	reqData := w.client.NewRequest(http.MethodPost, url)
+	resp, err := w.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	addHeaders(req, w.client)
-	res, err := w.client.httpClient.Do(req)
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := sendTemplateResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
@@ -122,30 +108,19 @@ func (w *Whatsapp) SendTemplate(sender, recipient, templateCode string, data map
 // SendText - Send a whatsapp text.
 func (w *Whatsapp) SendText(sender, recipient, message string) (sendTemplateResponse, error) {
 	url := fmt.Sprint(w.client.baseURL, endpointSendWhatsapp)
-	byte, err := json.Marshal(sendTextPayload{
+	payload := sendTextPayload{
 		Recipient: recipient,
 		Sender:    sender,
 		Type:      WhatsappTypeText,
 		Message:   message,
-	})
+	}
+	reqData := w.client.NewRequest(http.MethodPost, url)
+	resp, err := w.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	addHeaders(req, w.client)
-	res, err := w.client.httpClient.Do(req)
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := sendTemplateResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
@@ -156,31 +131,20 @@ func (w *Whatsapp) SendText(sender, recipient, message string) (sendTemplateResp
 // SendAudio - Send a whatsapp audio message.
 func (w *Whatsapp) SendAudio(sender, recipient, message, link string) (sendTemplateResponse, error) {
 	url := fmt.Sprint(w.client.baseURL, endpointSendWhatsapp)
-	byte, err := json.Marshal(sendAudioPayload{
+	payload := sendAudioPayload{
 		Recipient: recipient,
 		Sender:    sender,
 		Type:      WhatsappTypeAudio,
 		Message:   message,
 		Link:      link,
-	})
+	}
+	reqData := w.client.NewRequest(http.MethodPost, url)
+	resp, err := w.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	addHeaders(req, w.client)
-	res, err := w.client.httpClient.Do(req)
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := sendTemplateResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
@@ -191,30 +155,19 @@ func (w *Whatsapp) SendAudio(sender, recipient, message, link string) (sendTempl
 // SendVideo - Send a whatsapp video message.
 func (w *Whatsapp) SendVideo(sender, recipient, link string) (sendTemplateResponse, error) {
 	url := fmt.Sprint(w.client.baseURL, endpointSendWhatsapp)
-	byte, err := json.Marshal(sendVideoPayload{
+	payload := sendVideoPayload{
 		Recipient: recipient,
 		Sender:    sender,
 		Type:      WhatsappTypeVideo,
 		Link:      link,
-	})
+	}
+	reqData := w.client.NewRequest(http.MethodPost, url)
+	resp, err := w.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	addHeaders(req, w.client)
-	res, err := w.client.httpClient.Do(req)
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := sendTemplateResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
@@ -225,30 +178,19 @@ func (w *Whatsapp) SendVideo(sender, recipient, link string) (sendTemplateRespon
 // SendSticker - Send a whatsapp sticker message.
 func (w *Whatsapp) SendSticker(sender, recipient, link string) (sendTemplateResponse, error) {
 	url := fmt.Sprint(w.client.baseURL, endpointSendWhatsapp)
-	byte, err := json.Marshal(sendVideoPayload{
+	payload := sendVideoPayload{
 		Recipient: recipient,
 		Sender:    sender,
 		Type:      WhatsappTypeSticker,
 		Link:      link,
-	})
+	}
+	reqData := w.client.NewRequest(http.MethodPost, url)
+	resp, err := w.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	addHeaders(req, w.client)
-	res, err := w.client.httpClient.Do(req)
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := sendTemplateResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
@@ -259,7 +201,7 @@ func (w *Whatsapp) SendSticker(sender, recipient, link string) (sendTemplateResp
 // SendLocation - Send a location via whatsapp.
 func (w *Whatsapp) SendLocation(sender, recipient string, longitude, latitude float64, name, address string) (sendTemplateResponse, error) {
 	url := fmt.Sprint(w.client.baseURL, endpointSendWhatsapp)
-	byte, err := json.Marshal(sendLocationPayload{
+	payload := sendLocationPayload{
 		Recipient: recipient,
 		Sender:    sender,
 		Type:      WhatsappTypeLocation,
@@ -267,25 +209,14 @@ func (w *Whatsapp) SendLocation(sender, recipient string, longitude, latitude fl
 		Longitude: longitude,
 		Name:      name,
 		Address:   address,
-	})
+	}
+	reqData := w.client.NewRequest(http.MethodPost, url)
+	resp, err := w.client.SendRequest(reqData, payload)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}
-
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(byte))
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	addHeaders(req, w.client)
-	res, err := w.client.httpClient.Do(req)
-	if err != nil {
-		return sendTemplateResponse{}, err
-	}
-
-	defer res.Body.Close()
 	r := sendTemplateResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return sendTemplateResponse{}, err
 	}

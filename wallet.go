@@ -11,7 +11,7 @@ const (
 )
 
 type walletBalanceResponse struct {
-	Status  string                    `json:"status"`
+	Status  uint                    `json:"status"`
 	Code    string                    `json:"code"`
 	Message string                    `json:"message"`
 	Data    walletBalanceResponseData `json:"data"`
@@ -37,24 +37,13 @@ type walletBalanceResponseDataDetails struct {
 
 func (c *Client) WalletBalance() (walletBalanceResponse, error) {
 	url := fmt.Sprint(c.baseURL, endpointWalletBalance)
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	reqData := c.NewRequest(http.MethodGet, url)
+	resp, err := c.SendRequest(reqData, nil)
 	if err != nil {
 		return walletBalanceResponse{}, err
 	}
-
-	// add necessary request headers
-	addHeaders(req, c)
-
-	res, err := c.httpClient.Do(req)
-	if err != nil {
-		return walletBalanceResponse{}, err
-	}
-
-	defer res.Body.Close()
-
 	r := walletBalanceResponse{}
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return walletBalanceResponse{}, err
 	}

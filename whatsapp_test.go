@@ -19,7 +19,7 @@ func TestSendTemplate(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 }
@@ -34,7 +34,7 @@ func TestSendText(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 }
@@ -50,7 +50,7 @@ func TestSendAudio(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 }
@@ -65,7 +65,7 @@ func TestSendVideo(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 }
@@ -80,7 +80,7 @@ func TestSendSticker(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 }
@@ -98,7 +98,7 @@ func TestSendLocation(t *testing.T) {
 		t.Error(err)
 	}
 
-	if res.Status != "success" {
+	if res.Status != 200 {
 		t.Error("res.Status: ", res.Status)
 	}
 }
