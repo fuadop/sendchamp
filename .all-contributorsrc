@@ -49,6 +49,16 @@
         "bug",
         "doc"
       ]
+    },
+    {
+      "login": "ShowBaba",
+      "name": "Sam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28683674?v=4",
+      "profile": "https://showbaba.github.io/samuelsx2/",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
